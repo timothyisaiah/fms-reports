@@ -23,13 +23,15 @@
     <link href="static/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <!-- Bootstrap core JavaScript-->
-    <script src="static/js/moment.min.js"></script>
     <script src="static/jquery/jquery.min.js"></script>
-    <script src="static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="static/js/moment.min.js"></script>
+    <script src="static/datetimepicker/moment-with-locale.js"></script>
     <script src="static/datetimepicker/datetimepicker.min.js"></script>
     <script src="static/datatables/jquery.dataTables.min.js"></script>
-
-
+    <link rel="stylesheet" href="static/datetimepicker/bootstrap-datetimepicker-build.css" />
+    <script src="static/datetimepicker/bootstrap-datetimepicker.js"></script>
     <!-- Page level custom scripts -->
     <script src="static/js/demo/datatables-demo.js"></script>
 </head>
@@ -280,8 +282,8 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
                     </div>
 
                     <!-- Date time picker -->
@@ -294,7 +296,7 @@
                                 <div class='col-md-5'>
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker6'>
-                                            <input type='text' class="form-control" />
+                                            <input type='date' class="form-control" id="startdate" />
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -304,14 +306,20 @@
                                 <div class='col-md-5'>
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker7'>
-                                            <input type='text' class="form-control" />
+                                            <input type='date' class="form-control" id="enddate" />
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
+                                <div class='col-md-2'>
+                                    <button class="btn btn-sm btn-primary shadow-sm" onclick="generateReport()"><i
+                                            class="fas fa-download fa-sm text-white-50"></i>
+                                        Generate Report</button>
+                                </div>
                             </div>
+
 
                         </div>
 
@@ -421,6 +429,100 @@
             // });
 
             // debugger;
+            // $.ajax({
+            //     url: 'https://hosting.fms-ecsinternational.com/api/tracker/list',
+            //     data: {
+            //         hash: "02d4aad3606697c7255b5aa2c12ff00a"
+            //     },
+            //     type: 'GET',
+            //     success: function (response) {
+            //         // debugger;
+            //         console.log(response);
+            //         var vehicles = response.list;
+
+            //         for (var i = 0; i < vehicles.length; i++) {
+            //             console.log(vehicles[i].label);
+            //             var distancetraveled = 0;
+            //             var enginetime = 0;
+
+            //             $.ajax({
+            //                 url: 'https://hosting.fms-ecsinternational.com/api/track/list',
+            //                 data: {
+            //                     hash: "02d4aad3606697c7255b5aa2c12ff00a",
+            //                     tracker_id: vehicles[i].id,
+            //                     type: "engine_hours",
+            //                     from: "2021-08-24 03:24:00",
+            //                     to: "2021-09-02 06:24:00"
+            //                 },
+            //                 type: 'GET',
+            //                 success: function (resp) {
+            //                     // debugger;
+            //                     console.log(resp);
+            //                     var tracks = resp.list;
+            //                     for (var x = 0; x < tracks.length; x++) {
+            //                         distancetraveled = distancetraveled + tracks[x].length;
+            //                     }
+
+            //                 }, error: function () {
+            //                     alert('There has been an error, Please Try again');
+            //                 },
+            //                 async: false
+            //             });
+
+
+
+            //             $.ajax({
+            //                 url: 'https://hosting.fms-ecsinternational.com/api/tracker/stats/engine_hours/read',
+            //                 data: {
+            //                     hash: "02d4aad3606697c7255b5aa2c12ff00a",
+            //                     tracker_id: vehicles[i].id,
+            //                     type: "engine_hours",
+            //                     from: "2021-08-24 03:24:00",
+            //                     to: "2021-09-02 06:24:00"
+            //                 },
+            //                 type: 'GET',
+            //                 success: function (resp) {
+            //                     // debugger;
+            //                     console.log(resp);
+            //                     enginetime = resp.value;
+
+            //                 }, error: function (error) {
+            //                     console.log(error);
+            //                 },
+            //                 async: false
+            //             });
+
+            //             //Append Fetched values to datatable
+            //             var row = '<tr>' +
+            //                 ' <td>' + vehicles[i].label + '</td>' +
+            //                 ' <td>2021-08-24</td>' +
+            //                 ' <td>2021-09-02</td>' +
+            //                 ' <td>' + distancetraveled + '</td>' +
+            //                 ' <td>' + enginetime + '</td>' +
+            //                 ' <td>0.00</td>' +
+            //                 ' <td>0.00</td>' +
+            //                 ' <td>0.00</td>' +
+            //                 ' <td>0.00</td>' +
+            //                 ' <td>0.00</td>' +
+            //                 '</tr>';
+
+            //             $('#table-bod').append(row);
+
+
+            //         }
+            //     }
+            // });
+
+        });
+
+        function generateReport() {
+            var startDate = $('#startdate').val();
+            var endDate = $('#enddate').val();
+            $('#table-bod').html('<div class="spinner-grow text-primary pull-righ"></div>');
+
+            startDate = startDate.replace("/", "-") + ' 00:00:00';
+            endDate = endDate.replace("/", "-") + ' 23:59:59';
+            console.log(endDate + "   " + startDate);
             $.ajax({
                 url: 'https://hosting.fms-ecsinternational.com/api/tracker/list',
                 data: {
@@ -431,6 +533,7 @@
                     // debugger;
                     console.log(response);
                     var vehicles = response.list;
+                    $('#table-bod').html('');
 
                     for (var i = 0; i < vehicles.length; i++) {
                         console.log(vehicles[i].label);
@@ -443,8 +546,8 @@
                                 hash: "02d4aad3606697c7255b5aa2c12ff00a",
                                 tracker_id: vehicles[i].id,
                                 type: "engine_hours",
-                                from: "2021-08-24 03:24:00",
-                                to: "2021-09-02 06:24:00"
+                                from: startDate,
+                                to: endDate
                             },
                             type: 'GET',
                             success: function (resp) {
@@ -458,7 +561,7 @@
                             }, error: function () {
                                 alert('There has been an error, Please Try again');
                             },
-                            async:false
+                            async: false
                         });
 
 
@@ -469,8 +572,8 @@
                                 hash: "02d4aad3606697c7255b5aa2c12ff00a",
                                 tracker_id: vehicles[i].id,
                                 type: "engine_hours",
-                                from: "2021-08-24 03:24:00",
-                                to: "2021-09-02 06:24:00"
+                                from: startDate,
+                                to: endDate
                             },
                             type: 'GET',
                             success: function (resp) {
@@ -481,16 +584,16 @@
                             }, error: function (error) {
                                 console.log(error);
                             },
-                            async:false
+                            async: false
                         });
 
                         //Append Fetched values to datatable
                         var row = '<tr>' +
                             ' <td>' + vehicles[i].label + '</td>' +
-                            ' <td>2021-08-24</td>' +
-                            ' <td>2021-09-02</td>' +
-                            ' <td>'+distancetraveled+'</td>' +
-                            ' <td>'+enginetime+'</td>' +
+                            ' <td>' + startDate + '</td>' +
+                            ' <td>' + endDate + '</td>' +
+                            ' <td>' + distancetraveled + '</td>' +
+                            ' <td>' + enginetime + '</td>' +
                             ' <td>0.00</td>' +
                             ' <td>0.00</td>' +
                             ' <td>0.00</td>' +
@@ -498,14 +601,14 @@
                             ' <td>0.00</td>' +
                             '</tr>';
 
-                            $('#table-bod').append(row);
+                        $('#table-bod').append(row);
 
 
                     }
                 }
             });
 
-        });
+        }
     </script>
 
 
